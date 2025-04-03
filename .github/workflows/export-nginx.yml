@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v1  # 改成 v1
 
       - name: Pull Docker image
         run: docker pull alpine:latest
@@ -17,8 +17,8 @@ jobs:
       - name: Save image to tar
         run: docker save alpine:latest -o alpine.tar
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload tar as artifact
+        uses: actions/upload-artifact@v2  # 改成 v2
         with:
           name: alpine-image
           path: alpine.tar
