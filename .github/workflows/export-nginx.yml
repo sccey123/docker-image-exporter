@@ -8,8 +8,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@0a724b5e6fa6f40bc5a08b66b655f4a9f01c7a48
+      - name: Install Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          docker --version
 
       - name: Pull Docker image
         run: docker pull alpine:latest
@@ -17,8 +21,17 @@ jobs:
       - name: Save image to tar
         run: docker save alpine:latest -o alpine.tar
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@1799279b66bafba4d60af26ef6dd1fc64aa5f32c
+      - name: Upload image
+        run: |
+          echo "::group::Upload artifact"
+          mkdir upload
+          mv alpine.tar upload/
+          zip -r alpine.zip upload
+          echo "::endgroup::"
+        shell: bash
+
+      - name: Upload to GitHub Artifact
+        uses: actions/upload-artifact@v3
         with:
           name: alpine-image
           path: alpine.tar
