@@ -1,24 +1,32 @@
 name: Export Docker Image
 
 on:
-  workflow_dispatch:  # 允许手动触发
+  workflow_dispatch:
 
 jobs:
-  save-docker-image:
+  export-image:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          docker --version
 
-      - name: Pull Docker image
-        run: docker pull nginx:latest
+      - name: Pull Docker Image
+        run: |
+          sudo docker pull nginx:latest
 
-      - name: Save image to tar
-        run: docker save nginx:latest -o nginx.tar
+      - name: Save Docker Image to File
+        run: |
+          sudo docker save nginx:latest -o nginx.tar
 
-      - name: Upload tar as artifact
+      - name: Upload Image File
         uses: actions/upload-artifact@v3
         with:
           name: nginx-image
           path: nginx.tar
+
