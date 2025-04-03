@@ -1,0 +1,24 @@
+name: Export Docker Image
+
+on:
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  save-docker-image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Pull Docker image
+        run: docker pull nginx:latest
+
+      - name: Save image to tar
+        run: docker save nginx:latest -o nginx.tar
+
+      - name: Upload tar as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: nginx-image
+          path: nginx.tar
