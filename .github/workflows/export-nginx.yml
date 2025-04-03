@@ -9,24 +9,18 @@ jobs:
 
     steps:
       - name: Set up Docker
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-          sudo systemctl start docker
-          sudo systemctl enable docker
-          docker --version
+        uses: docker/setup-docker@v2
 
-      - name: Pull Docker Image
+      - name: Pull Docker image
         run: |
-          sudo docker pull nginx:latest
+          docker pull nginx:latest
 
-      - name: Save Docker Image to File
+      - name: Save image to tar
         run: |
-          sudo docker save nginx:latest -o nginx.tar
+          docker save nginx:latest -o ./nginx.tar
 
-      - name: Upload Image File
+      - name: Upload tar as artifact
         uses: actions/upload-artifact@v3
         with:
           name: nginx-image
-          path: nginx.tar
-
+          path: ./nginx.tar
